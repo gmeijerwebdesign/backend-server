@@ -2,33 +2,37 @@ const express = require("express");
 const axios = require("axios");
 
 const cors = require("cors");
-const mysql = require("mysql2");
+const { Pool } = require("pg");
 const app = express();
 const port = 5000;
 
 app.use(cors());
 app.use(express.json());
 
-const DB = mysql
-  .createConnection({
-    host: "localhost",
-    user: "root",
-    password: "admin",
-    database: "portfolio_wp",
-  })
-  .promise();
+const pool = new Pool({
+  host: "dpg-crld8s8gph6c73e3trvg-a",
+  user: "gavin_b6s8_user",
+  password: "Llnew57nqEXY4GMVpEQ91tny0OGUxu97",
+  database: "gavin_b6s8",
+  port: 5432,
+}).promise();
 
-DB.connect((err) => {
-  if (err) {
-    console.error("Error connecting to database:", err);
-    return;
-  }
-  console.log("Connected to the database!");
-});
+// Bijvoorbeeld een query
+pool
+  .query("SELECT * FROM wp_posts WHERE post_type = $1 AND post_status = $2", [
+    "post",
+    "publish",
+  ])
+  .then((result) => {
+    console.log(result.rows);
+  })
+  .catch((err) => {
+    console.error("Database query error", err);
+  });
 
 app.get("/api/posts", async (req, res) => {
   try {
-    const response = await DB.query(
+    const response = await pool.query(
       "SELECT * FROM wp_posts WHERE post_type = 'post' AND post_status = 'publish';"
     );
     res.status(202).json({ posts: response });
