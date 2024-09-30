@@ -15,7 +15,7 @@ const pool = new Pool({
   password: "Llnew57nqEXY4GMVpEQ91tny0OGUxu97",
   database: "gavin_b6s8",
   port: 5432,
-}).promise();
+});
 
 // Bijvoorbeeld een query
 pool
@@ -54,7 +54,6 @@ app.get("/api/product", async (req, res) => {
   }
 });
 
-// Start de server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
